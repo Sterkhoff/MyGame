@@ -7,19 +7,16 @@ public partial class MainForm : Form
     private Game game;
     public MainForm(Game game)
     {
-        InitializeComponent();
         this.game = game;
-        ShowGame();
-    }
-
-    public void ShowGame()
-    {
-        playerControl.Configure(game);
-        playerControl.Show();
+        InitializeComponent();
     }
 
     public void CheckUpdates()
     {
-        playerControl.CheckUpdates();
+        game.CurrentLevel.Player.Controller.Update();
+        foreach (var enemy in game.CurrentLevel.Enemies)
+        {
+            enemy.Controller.Update();
+        }
     }
 }

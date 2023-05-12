@@ -1,4 +1,6 @@
-﻿namespace MyGame;
+﻿using MyGame.Domain;
+
+namespace MyGame;
 
 partial class MainForm
 {
@@ -35,17 +37,22 @@ partial class MainForm
         this.WindowState = FormWindowState.Maximized;
         this.FormBorderStyle = FormBorderStyle.None;
         this.Text = "Form1";
-        this.playerControl = new PlayerControl();
-
-        this.playerControl.Dock = System.Windows.Forms.DockStyle.Fill;
-        this.playerControl.Location = new System.Drawing.Point(0, 0);
-        this.playerControl.Name = "playerControl";
-        this.playerControl.Size = new System.Drawing.Size(1920, 1080);
-        this.playerControl.TabIndex = 2;
         
-        this.Controls.Add(playerControl);
+        this.Controls.Add(game.CurrentLevel.Finish.HitBox);
+        this.Controls.Add(game.CurrentLevel.Player.HitBox);
+        foreach (var enemy in game.CurrentLevel.Enemies)
+        {
+            this.Controls.Add(enemy.HitBox);
+        }
+        MouseClick += (sender, args) =>
+        {
+            game.CurrentLevel.Player.Controller.StartMovePlayerToMouse(MousePosition);
+
+            foreach (var enemy in game.CurrentLevel.Enemies)
+            {
+                enemy.Controller.StartMoveEnemyToPlayer(game.CurrentLevel.Player.Location);
+            }
+        };
     }
-    
-    private PlayerControl playerControl;
     #endregion
 }
