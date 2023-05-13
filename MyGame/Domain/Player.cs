@@ -1,16 +1,12 @@
 ﻿namespace MyGame.Domain;
 
-public class Player
+public class Player : IGameObject
 {
     public Player(Point location)
     {
         Location = location;
-        HitBox = new PictureBox()
-        {
-            Size = new Size(50, 80), Location = location,
-            SizeMode = PictureBoxSizeMode.CenterImage, BackColor = Color.Red
-        };
         Controller = new PlayerController(this);
+        Size = new Size(50, 80);
     }
     
     public enum Direcion
@@ -20,11 +16,10 @@ public class Player
     }
 
     public Direcion direction = Direcion.Left;
-    public Point Location;
-    public Size PlayerSize = new (50, 80);
+    public Point Location { get; set; }
+    public Size Size { get; }
     public bool IsAlive = true;
     public PlayerController Controller { get; }
-    public PictureBox HitBox { get; }
     
     public void MoveToMouse(Point MousePosition)
     {
@@ -61,7 +56,5 @@ public class Player
                 new Point(Location.X + (int)Math.Round(2 * Math.Cos(angle)),
                     Location.Y - (int)Math.Round(2 * Math.Sin(angle)));
         }
-
-        HitBox.Location = Location;
     }
 }

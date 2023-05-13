@@ -2,15 +2,17 @@
 
 public class Level
 {
-    public Level(Player player, Finish finish, params Enemy[] enemies)
+    public Level(Point startPoint, Point finishLocation, Point[] enemiesLocations, Point[] trapsLocations)
     {
-        Player = player;
-        Enemies = enemies;
-        Finish = finish;
+        TrapsLocations = trapsLocations;
+        StartPoint = startPoint;
+        EnemiesLocations = enemiesLocations;
+        FinishLocation = finishLocation;
     }
 
-    public Finish Finish;
-    public Player Player;
-    public Enemy[] Enemies;
+    public Point[] TrapsLocations;
+    public Point FinishLocation;
+    public Point StartPoint;
+    public Point[] EnemiesLocations;
     public bool Finished = false;
 }

@@ -31,28 +31,66 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
+        this.DoubleBuffered = true;
         this.components = new System.ComponentModel.Container();
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(1920, 1080);
         this.WindowState = FormWindowState.Maximized;
         this.FormBorderStyle = FormBorderStyle.None;
-        this.Text = "Form1";
+        this.Text = "Game";
+        this.player = new Player(currentLevel.StartPoint);
+        this.finish = new Finish(currentLevel.FinishLocation);
+        this.enemies = new Enemy1[currentLevel.EnemiesLocations.Length];
+        this.traps = new Trap[currentLevel.TrapsLocations.Length];
+        this.restartMenu = new RestartMenu();
         
-        this.Controls.Add(game.CurrentLevel.Finish.HitBox);
-        this.Controls.Add(game.CurrentLevel.Player.HitBox);
-        foreach (var enemy in game.CurrentLevel.Enemies)
+        for (int i = 0; i < enemies.Length; i++)
         {
-            this.Controls.Add(enemy.HitBox);
+            enemies[i] = new Enemy1(currentLevel.EnemiesLocations[i]);
         }
+        
+        for (int i = 0; i < traps.Length; i++)
+        {
+            traps[i] = new Trap(currentLevel.TrapsLocations[i]);
+        }
+        
         MouseClick += (sender, args) =>
         {
-            game.CurrentLevel.Player.Controller.StartMovePlayerToMouse(MousePosition);
+            this.player.Controller.StartMovePlayerToMouse(MousePosition);
 
-            foreach (var enemy in game.CurrentLevel.Enemies)
+            foreach (var enemy in this.enemies)
             {
-                enemy.Controller.StartMoveEnemyToPlayer(game.CurrentLevel.Player.Location);
+                enemy.Controller.StartMoveEnemyToPlayer(this.player.Location);
+            }
+        };
+        
+        Paint += (sender, args) =>
+        {
+            args.Graphics.FillRectangle
+                (Brushes.Blue, this.player.Location.X, this.player.Location.Y, 50, 80);
+            
+            args.Graphics.FillRectangle
+                (Brushes.GreenYellow, finish.Location.X, finish.Location.Y, 50, 50);
+            
+            foreach (var enemy in this.enemies)
+            {
+                if (enemy.IsAlive)
+                    args.Graphics.FillRectangle
+                        (Brushes.Red, enemy.Location.X, enemy.Location.Y, 50, 80);
+            }
+
+            foreach (var trap in this.traps)
+            {
+                args.Graphics.FillRectangle(Brushes.Black, trap.Location.X, trap.Location.Y, 50, 50);
             }
         };
     }
+
+    private Trap[] traps;
+    private Finish finish;
+    private RestartMenu restartMenu;
+    private Enemy1[] enemies;
+    private Player player;
+
     #endregion
 }

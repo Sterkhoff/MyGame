@@ -1,15 +1,11 @@
 ﻿namespace MyGame.Domain;
 
-public class Enemy1 : Enemy
+public class Enemy1 : IEnemy
 {
     public Enemy1(Point location)
     {
         Location = location;
-        HitBox = new PictureBox()
-        {
-            Size = new Size(50, 80), Location = location,
-            SizeMode = PictureBoxSizeMode.CenterImage, BackColor = Color.Black
-        };
+        Size = new Size(50, 80);
         Controller = new Enemy1Controller(this);
     }
     
@@ -20,10 +16,9 @@ public class Enemy1 : Enemy
     }
 
     public Direcion direction = Direcion.Left;
-    public Point Location;
-    public Size Size = new (50, 80);
+    public Point Location { get; set; }
+    public Size Size { get; }
     public bool IsAlive = true;
-    public PictureBox HitBox {get;}
     public Enemy1Controller Controller { get; }
 
     public void MoveToPlayer(Point playerPosition)
@@ -59,7 +54,5 @@ public class Enemy1 : Enemy
                 new Point(Location.X + (int)Math.Round(2 * Math.Cos(angle)),
                     Location.Y - (int)Math.Round(2 * Math.Sin(angle)));
         }
-
-        HitBox.Location = Location;
     }
 }
