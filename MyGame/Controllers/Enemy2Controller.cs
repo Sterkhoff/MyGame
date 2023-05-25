@@ -2,13 +2,13 @@
 
 namespace MyGame;
 
-public class Enemy1Controller
+public class Enemy2Controller
 {
-    public Enemy1Controller(Enemy1 enemy)
+    public Enemy2Controller(Enemy2 enemy)
     {
         this.enemy = enemy;
     }
-    private Enemy1 enemy; 
+    private Enemy2 enemy; 
 
     public Point positionAfterStep;
 
@@ -25,7 +25,7 @@ public class Enemy1Controller
 
     public void StartMoveEnemyToPlayer(Point mousePosition)
     {
-        moves = 40;
+        moves = 70;
         positionAfterStep = mousePosition;
     }
 }

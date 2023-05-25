@@ -1,13 +1,10 @@
 ﻿namespace MyGame.Domain;
 
-public class Finish : IGameObject
+public class Finish : SimplyMoveableObject
 {
     public Finish(Point location)
     {
         Location = location;
-        Size = new Size(50, 50);
+        Size = new Size(50, 90);
     }
-
-    public Point Location { get; }
-    public Size Size { get; }
 }

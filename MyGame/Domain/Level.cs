@@ -1,18 +1,20 @@
-﻿namespace MyGame.Domain;
+﻿using System.Runtime.CompilerServices;
+
+namespace MyGame.Domain;
 
 public class Level
 {
-    public Level(Point startPoint, Point finishLocation, Point[] enemiesLocations, Point[] trapsLocations)
-    {
-        TrapsLocations = trapsLocations;
-        StartPoint = startPoint;
-        EnemiesLocations = enemiesLocations;
-        FinishLocation = finishLocation;
-    }
-
-    public Point[] TrapsLocations;
+    public readonly string DescriptionText = "";
+    public List<Point> Enemies2Locations = new ();
+    public List<Point> TrapsLocations = new ();
     public Point FinishLocation;
     public Point StartPoint;
-    public Point[] EnemiesLocations;
-    public bool Finished = false;
+    public Point BellLocation;
+    public List<Point> Enemies1Locations = new ();
+    public bool IsFinished { get; private set; }
+
+    public void FinishLevel()
+    {
+        IsFinished = true;
+    }
 }
