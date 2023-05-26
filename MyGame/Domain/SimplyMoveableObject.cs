@@ -9,6 +9,7 @@ public enum Direcion
 public class SimplyMoveableObject : IGameObject
 {
     public Size Size { get; set; }
+    public bool IsCarried;
     private Point positionAfterStep;
     public bool IsMove;
     public int Moves;
@@ -55,6 +56,12 @@ public class SimplyMoveableObject : IGameObject
                         Location.Y - (int)Math.Round(2 * Math.Sin(angle)));
             Direction = Direcion.Left;
         }
+    }
+
+    public void MoveByMouse(Point MousePoition)
+    {
+        Location = new Point(MousePoition.X - Size.Width / 2, MousePoition.Y - Size.Height / 2);
+        IsCarried = true;
     }
     
     public void Update()

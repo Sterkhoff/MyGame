@@ -8,7 +8,6 @@ public class Player : SimplyMoveableObject
         Size = new Size(50, 80);
     }
     
-    
     public int AnimationNumber = 1;
     public bool IsAlive = true;
 }

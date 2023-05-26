@@ -4,7 +4,7 @@ namespace MyGame.Domain;
 
 public class Level
 {
-    public readonly string DescriptionText = "";
+    public string DescriptionText = "";
     public List<Point> Enemies2Locations = new ();
     public List<Point> TrapsLocations = new ();
     public Point FinishLocation;

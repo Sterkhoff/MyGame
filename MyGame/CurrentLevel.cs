@@ -1,20 +1,23 @@
+﻿using System.Windows.Forms;
 using MyGame.Domain;
 
 namespace MyGame;
 
-public partial class CurrentLevelForm : Form
+public partial class CurrentLevel : UserControl
 {
-    private Level[] levels;
+    public bool IsClosed;
     private Level currentLevel;
     private int currentLevelNumber;
     private int tickNumber;
-    public CurrentLevelForm(Level[] levels)
+    public bool IsFinished;
+    
+    public CurrentLevel(Level level, int levelNumber)
     {
-        currentLevel = levels[0];
-        this.levels = levels;
+        currentLevel = level;
+        currentLevelNumber = levelNumber;
         InitializeComponent();
     }
-
+    
     public void CheckUpdates()
     {
         if (tickNumber > 500)
@@ -25,17 +28,19 @@ public partial class CurrentLevelForm : Form
         finish.Update();
         foreach (var enemy in enemies1)
         {
+            enemy.Update();
             if (player.Moves == 39)
                 enemy.StartMoveToObject(new Point(player.Location.X + player.Size.Width / 2, 
-                    player.Location.Y + player.Size.Height / 2));
+                        player.Location.Y + player.Size.Height / 2));
         }
+
         if (currentLevel.IsFinished)
         {
-            currentLevel = levels[++currentLevelNumber];
-            InitializeComponent();
+            IsFinished = true;
         }
+
         tickNumber++;
-        Invalidate();
+        Refresh();
     }
 
     private void UpdateAnimationsNumbers()
@@ -66,7 +71,7 @@ public partial class CurrentLevelForm : Form
         if (player.AnimationNumber > 4 && player.IsAlive)
             player.AnimationNumber = 1;
     }
-    
+
     private void CheckCollides()
     {
         if (player.IsAlive && (player.Location.X + player.Size.Width / 2 < 250 || player.Location.X + player.Size.Width / 2 > 1270 
@@ -78,14 +83,20 @@ public partial class CurrentLevelForm : Form
         }
         foreach (var enemy in enemies1)
         {
-            if (enemy.IsAlive)
-                enemy.Update();
             if (Collide(player, enemy) && enemy.IsAlive && player.IsAlive)
             {
                 player.AnimationNumber = 1;
                 player.IsAlive = false;
                 enemy.IsAttack = true;
                 enemy.AnimationNumber = 1;
+            }
+            
+            if (enemy.IsAlive && (enemy.Location.X + enemy.Size.Width / 2 < 250 || enemy.Location.X + enemy.Size.Width / 2 > 1270 
+                    || enemy.Location.Y + enemy.Size.Height < 135 
+                    || enemy.Location.Y + enemy.Size.Height > 725))
+            {
+                enemy.AnimationNumber = 1;
+                enemy.IsAlive = false;
             }
         }
 
