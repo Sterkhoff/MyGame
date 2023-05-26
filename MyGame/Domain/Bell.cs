@@ -1,11 +1,10 @@
 ﻿namespace MyGame.Domain;
 
-public class Bell : IGameObject
+public class Bell : SimplyMoveableObject
 {
     public Bell(Point location)
     {
         Location = location;
+        Size = new Size(40, 40);
     }
-    public Size Size => new (40, 40);
-    public Point Location { get; }
 }

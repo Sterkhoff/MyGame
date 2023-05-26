@@ -53,30 +53,15 @@ partial class CurrentLevel
             traps[i] = new Trap(currentLevel.TrapsLocations[i]);
         }
         
-        MouseClick += (sender, args) => 
+        MouseDown += (sender, args) =>
         {
-            if (MouseOnObject(bell))
-            {
-                if (currentLevelNumber == 4)
-                    finish.StartMoveToObject(currentLevel.BellLocation);
-                foreach (var enemy in enemies1)
-                {
-                    enemy.StartMoveToObject(currentLevel.BellLocation);
-                }
-                return;
-            }
-            if (player.IsAlive)
-                this.player.StartMoveToObject(new(MousePosition.X - 25, MousePosition.Y - 40));
-        };
-
-        if (currentLevelNumber == 6)
-        {
-            MouseDown += (sender, args) =>
-            {
+            var flag = false;
+            if (currentLevelNumber == 7)
                 foreach (var enemy in enemies1)
                 {
                     if (MouseOnObject(enemy))
                     {
+                        flag = true;
                         enemy.MoveByMouse(MousePosition);
                         MouseMove += (o, eventArgs) =>
                         {
@@ -86,20 +71,70 @@ partial class CurrentLevel
                         MouseUp += (o, eventArgs) => enemy.IsCarried = false;
                     }
                 }
-            };
-        }
+            
+            if (currentLevelNumber == 8) 
+                if (MouseOnObject(bell))
+                {
+                    flag = true;
+                    bell.MoveByMouse(MousePosition);
+                    MouseMove += (o, eventArgs) =>
+                    {
+                        if (bell.IsCarried)
+                            bell.MoveByMouse(MousePosition);
+                    };
+                    MouseUp += (o, eventArgs) => bell.IsCarried = false;
+                }
+
+            if (currentLevelNumber == 9)
+            {
+                this.finish.StartMoveToObject(new Point(MousePosition.X - 50, MousePosition.Y - 90));
+                foreach (var enemy in enemies1)
+                {
+                    enemy.StartMoveToObject(player.Location);
+                }
+                return;
+            }
+
+            if (currentLevelNumber == 10)
+            {
+                foreach (var trap in traps)
+                {
+                    if (MouseOnObject(trap))
+                    {
+                        trap.IsActive = false;
+                        flag = true;
+                    }
+                }
+            }
+
+            if (MouseOnObject(bell))
+            {
+                if (currentLevelNumber == 4)
+                    finish.StartMoveToObject(bell.Location);
+                foreach (var enemy in enemies1)
+                {
+                    enemy.StartMoveToObject(bell.Location);
+                }
+                return;
+            }
+            if (!flag)
+                if (player.IsAlive)
+                    this.player.StartMoveToObject(new(MousePosition.X - 25, MousePosition.Y - 80));
+        };
 
         KeyDown += (sender, args) =>
         {
             if (args.KeyCode == Keys.Escape)
                 IsClosed = true;
+            if (args.KeyCode == Keys.R)
+                Restarted = true;
         };
 
 
         MouseDoubleClick += (sender, args) =>
         {
             if (!player.IsAlive)
-                InitializeComponent();
+                Restarted = true;
         };
         
         Paint += (sender, args) =>
@@ -108,6 +143,17 @@ partial class CurrentLevel
             PaintTraps(args);
             PaintPlayer(args);
             PaintEnemies(args);
+            args.Graphics.DrawString(currentLevel.DescriptionText, 
+                new Font("Times New Roman", 30, FontStyle.Bold), new SolidBrush(Color.Black), 
+                690 - currentLevel.DescriptionText.Length * 8, 80);
+            
+            if (!player.IsAlive)
+                args.Graphics.DrawImage(Resources.Restart, 
+                    525, 400, 500, 400);
+            if (currentLevelNumber == 1)
+                args.Graphics.DrawString("Нажмите ЛКМ чтобы двигаться\nНажмите R для рестарта\nНажмите ESC для выхода", 
+                    new Font("Times New Roman", 20, FontStyle.Bold), new SolidBrush(Color.Black), 
+                    284, 179);
         };
     }
 
@@ -120,8 +166,7 @@ partial class CurrentLevel
         private void PaintPlayer(PaintEventArgs args)
     {
         if (!player.IsAlive && player.AnimationNumber >= 4)
-            args.Graphics.DrawImage(Resources.PlayerDead4, 
-                this.player.Location.X, this.player.Location.Y, this.player.Size.Width, this.player.Size.Height);
+            return;
         
         else if (!player.IsAlive)
             args.Graphics.DrawImage((Bitmap)Resources.ResourceManager.GetObject($"PlayerDead{player.AnimationNumber}"), 
@@ -151,7 +196,7 @@ partial class CurrentLevel
         foreach (var enemy in this.enemies1)
         {
             if (!enemy.IsAlive && enemy.AnimationNumber > 4)
-                return;
+                continue;
             else if (!enemy.IsAlive && enemy.AnimationNumber < 5)
             {
                 args.Graphics.DrawImage(
@@ -216,26 +261,17 @@ partial class CurrentLevel
 
     private void PaintAmbientAndGUI(PaintEventArgs args)
     {
-        if (!player.IsAlive)
-            args.Graphics.DrawImage(Resources.Restart, 
-                525, 400, 500, 400);
-        
-        args.Graphics.DrawString(currentLevel.DescriptionText, 
-            new Font("Times New Roman", 30), new SolidBrush(Color.Tomato), 
-            740 - currentLevel.DescriptionText.Length * 8, 300);
-        
         args.Graphics.DrawString($"{MousePosition.X} {MousePosition.Y}", 
             new Font("Times New Roman", 30), new SolidBrush(Color.Black), 
             0, 0);
         
-        if (currentLevel.BellLocation.X != 0)
+        if (bell.Location.X != 0)
             args.Graphics.DrawImage(Resources.Bell, 
-                currentLevel.BellLocation.X, currentLevel.BellLocation.Y, 50, 50);
+                bell.Location.X, bell.Location.Y, 50, 50);
         
         args.Graphics.DrawImage(Resources.finish, this.finish.Location.X, this.finish.Location.Y, 50, 90);
         
-        args.Graphics.DrawImage(Resources.DangerIcon, 
-            125, 400, 60, 60);
+        args.Graphics.DrawImage(Resources.DangerIcon, 90, 400, 80, 80);
     }
     private Trap[] traps;
     private Finish finish;

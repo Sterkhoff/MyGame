@@ -10,6 +10,7 @@ public partial class CurrentLevel : UserControl
     private int currentLevelNumber;
     private int tickNumber;
     public bool IsFinished;
+    public bool Restarted;
     
     public CurrentLevel(Level level, int levelNumber)
     {

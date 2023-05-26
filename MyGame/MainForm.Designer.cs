@@ -40,7 +40,7 @@ partial class CurrentLevelForm
         this.WindowState = FormWindowState.Maximized;
         this.FormBorderStyle = FormBorderStyle.None;
         this.Text = "Game";
-        this.BackColor = Color.Chartreuse;
+        this.BackgroundImage = Resources.fon1;
         this.start = new PictureBox()
         {
             Image = Resources.Start, SizeMode = PictureBoxSizeMode.StretchImage,
