@@ -1,10 +1,11 @@
 ﻿namespace MyGame.Domain;
 
-public class Player : SimplyMoveableObject
+public class Enemy : SimplyMoveableObject
 {
-    public int AnimationNumber = 1;
+    public bool IsAttack = false;
     public bool IsAlive = true;
-
+    public int AnimationNumber = 1;
+    
     public override void Update(int tickNumber)
     {
         IsMove = Moves > 0;
@@ -17,13 +18,16 @@ public class Player : SimplyMoveableObject
         if (tickNumber % 10 == 0)
         {
             AnimationNumber++;
+            if (AnimationNumber > 4 && IsAlive)
+            {
+                IsAttack = false;
+                AnimationNumber = 1;
+            }
         }
-        
-        if (AnimationNumber > 4 && IsAlive)
-            AnimationNumber = 1;
     }
 
-    public Player(Point location) : base(location, new Size(50, 80))
+
+    public Enemy(Point location) : base(location, new Size(50, 80))
     {
     }
 }

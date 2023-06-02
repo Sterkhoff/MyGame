@@ -4,7 +4,7 @@ using MyGame.Domain;
 
 namespace MyGame;
 
-partial class CurrentLevelForm
+partial class MainForm
 {
     /// <summary>
     ///  Required designer variable.

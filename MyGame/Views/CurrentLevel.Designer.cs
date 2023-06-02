@@ -36,21 +36,21 @@ partial class CurrentLevel
         this.components = new System.ComponentModel.Container();
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(1920, 1080);
-        this.player = new Player(currentLevel.StartPoint);
-        this.bell = new Bell(currentLevel.BellLocation);
-        this.finish = new Finish(currentLevel.FinishLocation);
-        this.enemies1 = new Enemy1[currentLevel.Enemies1Locations.Count];
-        this.traps = new Trap[currentLevel.TrapsLocations.Count];
+        this.player = new Player(currentLevelInfo.StartPosition);
+        this.bell = new Bell(currentLevelInfo.BellLocation);
+        this.finish = new Finish(currentLevelInfo.FinishLocation);
+        this.enemies1 = new Enemy[currentLevelInfo.EnemiesLocations.Count];
+        this.traps = new Trap[currentLevelInfo.TrapsLocations.Count];
         this.BackgroundImage = (Bitmap)Resources.ResourceManager.GetObject("fon");
 
         for (int i = 0; i < enemies1.Length; i++)
         {
-            enemies1[i] = new Enemy1(currentLevel.Enemies1Locations[i]);
+            enemies1[i] = new Enemy(currentLevelInfo.EnemiesLocations[i]);
         }
         
         for (int i = 0; i < traps.Length; i++)
         {
-            traps[i] = new Trap(currentLevel.TrapsLocations[i]);
+            traps[i] = new Trap(currentLevelInfo.TrapsLocations[i]);
         }
         
         MouseDown += (sender, args) =>
@@ -143,9 +143,9 @@ partial class CurrentLevel
             PaintTraps(args);
             PaintPlayer(args);
             PaintEnemies(args);
-            args.Graphics.DrawString(currentLevel.DescriptionText, 
+            args.Graphics.DrawString(currentLevelInfo.DescriptionText, 
                 new Font("Times New Roman", 30, FontStyle.Bold), new SolidBrush(Color.Black), 
-                690 - currentLevel.DescriptionText.Length * 8, 80);
+                690 - currentLevelInfo.DescriptionText.Length * 8, 80);
             
             if (!player.IsAlive)
                 args.Graphics.DrawImage(Resources.Restart, 
@@ -176,7 +176,7 @@ partial class CurrentLevel
             args.Graphics.DrawImage((Bitmap)Resources.ResourceManager.GetObject($"PlayerIdle{player.AnimationNumber}"), 
                 this.player.Location.X, this.player.Location.Y, this.player.Size.Width, this.player.Size.Height);
         
-        else if (player.Direction == Direcion.Right) 
+        else if (player.Directions == Directions.Right) 
             args.Graphics.DrawImage((Bitmap)Resources.ResourceManager.GetObject($"PlayerWalk{player.AnimationNumber}"), 
                 this.player.Location.X, this.player.Location.Y, this.player.Size.Width, this.player.Size.Height);
 
@@ -205,7 +205,7 @@ partial class CurrentLevel
             }
             else if (enemy.IsAttack)
             {
-                if (enemy.Direction == Direcion.Left)
+                if (enemy.Directions == Directions.Left)
                 {
                     var currentEnemySprite =
                         (Bitmap)Resources.ResourceManager.GetObject($"Enemy1Attack{enemy.AnimationNumber}");
@@ -225,7 +225,7 @@ partial class CurrentLevel
                     (Bitmap)Resources.ResourceManager.GetObject($"Enemy1Idle{enemy.AnimationNumber}"),
                     enemy.Location.X, enemy.Location.Y, enemy.Size.Width, enemy.Size.Height);
 
-            else if (enemy.Direction == Direcion.Right)
+            else if (enemy.Directions == Directions.Right)
                 args.Graphics.DrawImage(
                     (Bitmap)Resources.ResourceManager.GetObject($"Enemy1Run{enemy.AnimationNumber}"),
                     enemy.Location.X, enemy.Location.Y, enemy.Size.Width, enemy.Size.Height);
@@ -261,10 +261,6 @@ partial class CurrentLevel
 
     private void PaintAmbientAndGUI(PaintEventArgs args)
     {
-        args.Graphics.DrawString($"{MousePosition.X} {MousePosition.Y}", 
-            new Font("Times New Roman", 30), new SolidBrush(Color.Black), 
-            0, 0);
-        
         if (bell.Location.X != 0)
             args.Graphics.DrawImage(Resources.Bell, 
                 bell.Location.X, bell.Location.Y, 50, 50);
@@ -275,7 +271,7 @@ partial class CurrentLevel
     }
     private Trap[] traps;
     private Finish finish;
-    private Enemy1[] enemies1;
+    private Enemy[] enemies1;
     private Player player;
     private Bell bell;
 

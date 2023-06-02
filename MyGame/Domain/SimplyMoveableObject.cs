@@ -1,22 +1,21 @@
 ﻿namespace MyGame.Domain;
 
-public enum Direcion
-{
-    Right,
-    Left
-}
-
 public class SimplyMoveableObject : IGameObject
 {
-    public Size Size { get; set; }
+    public SimplyMoveableObject(Point location, Size size)
+    {
+        Location = location;
+        Size = size;
+    }
+    public Size Size { get; }
     public bool IsCarried;
-    private Point positionAfterStep;
+    internal Point positionAfterStep;
     public bool IsMove;
-    public int Moves;
-    public Direcion Direction;
-    public Point Location { get; set; }
+    public int Moves { get; internal set; }
+    public Directions Directions { get; private set; }
+    public Point Location { get; private set; }
     
-    public void MoveToObject(Point objectLocation)
+    internal void MoveToObject(Point objectLocation)
     {
         if (Math.Abs(Location.X - objectLocation.X) < 2 && Math.Abs(Location.Y - objectLocation.Y) < 2)
         {
@@ -39,7 +38,7 @@ public class SimplyMoveableObject : IGameObject
                 Location =
                     new Point(Location.X + (int)Math.Round(2 * Math.Cos(angle)),
                         Location.Y - (int)Math.Round(2 * Math.Sin(angle)));
-            Direction = Direcion.Right;
+            Directions = Directions.Right;
 
         }
 
@@ -54,7 +53,7 @@ public class SimplyMoveableObject : IGameObject
                 Location =
                     new Point(Location.X - (int)Math.Round(2 * Math.Cos(angle)),
                         Location.Y - (int)Math.Round(2 * Math.Sin(angle)));
-            Direction = Direcion.Left;
+            Directions = Directions.Left;
         }
     }
 
@@ -64,7 +63,7 @@ public class SimplyMoveableObject : IGameObject
         IsCarried = true;
     }
     
-    public void Update()
+    public virtual void Update(int tickNumber)
     {
         IsMove = Moves > 0;
         if (Moves > 0)

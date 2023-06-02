@@ -1,20 +1,19 @@
-﻿using System.Windows.Forms;
-using MyGame.Domain;
+﻿using MyGame.Domain;
 
 namespace MyGame;
 
 public partial class CurrentLevel : UserControl
 {
     public bool IsClosed;
-    private Level currentLevel;
+    private LevelInfo currentLevelInfo;
     private int currentLevelNumber;
     private int tickNumber;
     public bool IsFinished;
     public bool Restarted;
     
-    public CurrentLevel(Level level, int levelNumber)
+    public CurrentLevel(LevelInfo levelInfo, int levelNumber)
     {
-        currentLevel = level;
+        currentLevelInfo = levelInfo;
         currentLevelNumber = levelNumber;
         InitializeComponent();
     }
@@ -23,57 +22,16 @@ public partial class CurrentLevel : UserControl
     {
         if (tickNumber > 500)
             tickNumber = 0;
-        UpdateAnimationsNumbers();
-        CheckCollides();
-        player.Update();
-        finish.Update();
-        foreach (var enemy in enemies1)
-        {
-            enemy.Update();
-            if (player.Moves == 39)
-                enemy.StartMoveToObject(new Point(player.Location.X + player.Size.Width / 2, 
-                        player.Location.Y + player.Size.Height / 2));
-        }
-
-        if (currentLevel.IsFinished)
+        CheckObjectConditions();
+        if (currentLevelInfo.IsFinished)
         {
             IsFinished = true;
         }
-
         tickNumber++;
         Refresh();
     }
 
-    private void UpdateAnimationsNumbers()
-    {
-        if (tickNumber % 10 == 0)
-        {
-            player.AnimationNumber++;
-            foreach (var enemy in enemies1)
-            {
-                enemy.AnimationNumber++;
-                if (enemy.AnimationNumber > 4 && enemy.IsAlive)
-                {
-                    enemy.IsAttack = false;
-                    enemy.AnimationNumber = 1;
-                }
-            }
-        }
-
-        if (tickNumber % 5 == 0)
-        {
-            foreach (var trap in traps)
-            {
-                if (!trap.IsActive && trap.AnimationNumber < 4)
-                    trap.AnimationNumber++;
-            }
-        }
-        
-        if (player.AnimationNumber > 4 && player.IsAlive)
-            player.AnimationNumber = 1;
-    }
-
-    private void CheckCollides()
+    private void CheckObjectConditions()
     {
         if (player.IsAlive && (player.Location.X + player.Size.Width / 2 < 250 || player.Location.X + player.Size.Width / 2 > 1270 
                                                             || player.Location.Y + player.Size.Height < 135 
@@ -99,10 +57,14 @@ public partial class CurrentLevel : UserControl
                 enemy.AnimationNumber = 1;
                 enemy.IsAlive = false;
             }
+            enemy.Update(tickNumber);
+            if (player.Moves == 39)
+                enemy.StartMoveToObject(new Point(player.Location.X + player.Size.Width / 2, 
+                    player.Location.Y + player.Size.Height / 2));
         }
 
         if (Collide(player, finish) && player.IsAlive)
-            currentLevel.FinishLevel();
+            currentLevelInfo.FinishLevel();
 
         foreach (var trap in traps)
         {
@@ -122,7 +84,10 @@ public partial class CurrentLevel : UserControl
                     trap.IsActive = false;
                 }
             }
+            trap.Update(tickNumber);
         }
+        player.Update(tickNumber);
+        finish.Update(tickNumber);
     }
     private bool Collide(IGameObject firstObject, IGameObject secondObject)
     {
@@ -140,21 +105,19 @@ public partial class CurrentLevel : UserControl
             }
             return false;
         }
-        else
-        {
-            delta.X = (firstObject.Location.X + firstObject.Size.Width / 2) -
-                      (secondObject.Location.X + secondObject.Size.Width / 2);
-            delta.Y = (firstObject.Location.Y + firstObject.Size.Height / 2) -
-                      (secondObject.Location.Y + secondObject.Size.Height / 2);
-            if (Math.Abs(delta.X) <= firstObject.Size.Width / 2 + secondObject.Size.Width / 2)
-            {
-                if (Math.Abs(delta.Y) <= firstObject.Size.Height / 2 + secondObject.Size.Height / 2)
-                {
-                    return true;
-                }
-            }
 
-            return false;
+        delta.X = (firstObject.Location.X + firstObject.Size.Width / 2) -
+                  (secondObject.Location.X + secondObject.Size.Width / 2);
+        delta.Y = (firstObject.Location.Y + firstObject.Size.Height / 2) -
+                  (secondObject.Location.Y + secondObject.Size.Height / 2);
+        if (Math.Abs(delta.X) <= firstObject.Size.Width / 2 + secondObject.Size.Width / 2)
+        {
+            if (Math.Abs(delta.Y) <= firstObject.Size.Height / 2 + secondObject.Size.Height / 2)
+            {
+                return true;
+            }
         }
+
+        return false;
     }
 }

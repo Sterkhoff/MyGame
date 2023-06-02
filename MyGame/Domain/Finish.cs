@@ -2,9 +2,7 @@
 
 public class Finish : SimplyMoveableObject
 {
-    public Finish(Point location)
+    public Finish(Point location) : base(location, new Size(50, 90))
     {
-        Location = location;
-        Size = new Size(50, 90);
     }
 }

@@ -1,16 +1,11 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace MyGame.Domain;
-
-public class Level
+﻿public class LevelInfo
 {
     public string DescriptionText = "";
-    public List<Point> Enemies2Locations = new ();
     public List<Point> TrapsLocations = new ();
     public Point FinishLocation;
-    public Point StartPoint;
+    public Point StartPosition;
     public Point BellLocation;
-    public List<Point> Enemies1Locations = new ();
+    public List<Point> EnemiesLocations = new ();
     public bool IsFinished { get; private set; }
 
     public void FinishLevel()

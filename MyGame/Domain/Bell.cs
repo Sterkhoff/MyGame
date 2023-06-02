@@ -2,9 +2,7 @@
 
 public class Bell : SimplyMoveableObject
 {
-    public Bell(Point location)
+    public Bell(Point location) : base(location, new Size(40, 40))
     {
-        Location = location;
-        Size = new Size(40, 40);
     }
 }

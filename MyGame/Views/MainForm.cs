@@ -2,12 +2,11 @@ using MyGame.Domain;
 
 namespace MyGame;
 
-public partial class CurrentLevelForm : Form
+public partial class MainForm : Form
 {
-    private List<Level> levels;
+    private readonly LevelInfo[] levels;
     private int currentLevelNumber;
-    private int tickNumber;
-    public CurrentLevelForm(List<Level> levels)
+    public MainForm(LevelInfo[] levels)
     {
         this.levels = levels;
         InitializeComponent();
@@ -49,7 +48,7 @@ public partial class CurrentLevelForm : Form
         }
     }
     
-    public void AddLevelsButtons()
+    private void AddLevelsButtons()
     {
         var location = new Point(316, 400);
         Controls.Add(new Button()
@@ -62,7 +61,7 @@ public partial class CurrentLevelForm : Form
             Enabled = false
         });
 
-        for (var i = 0; i < levels.Count; i++)
+        for (var i = 0; i < levels.Length; i++)
         {
             var button = new Button()
             {
