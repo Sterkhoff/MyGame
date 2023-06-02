@@ -140,20 +140,8 @@ partial class CurrentLevel
         Paint += (sender, args) =>
         {
             PaintAmbientAndGUI(args);
-            PaintTraps(args);
             PaintPlayer(args);
             PaintEnemies(args);
-            args.Graphics.DrawString(currentLevelInfo.DescriptionText, 
-                new Font("Times New Roman", 30, FontStyle.Bold), new SolidBrush(Color.Black), 
-                690 - currentLevelInfo.DescriptionText.Length * 8, 80);
-            
-            if (!player.IsAlive)
-                args.Graphics.DrawImage(Resources.Restart, 
-                    525, 400, 500, 400);
-            if (currentLevelNumber == 1)
-                args.Graphics.DrawString("Нажмите ЛКМ чтобы двигаться\nНажмите R для рестарта\nНажмите ESC для выхода", 
-                    new Font("Times New Roman", 20, FontStyle.Bold), new SolidBrush(Color.Black), 
-                    284, 179);
         };
     }
 
@@ -163,7 +151,7 @@ partial class CurrentLevel
         && MousePosition.X < gameObject.Location.X + gameObject.Size.Width
         && MousePosition.Y < gameObject.Location.Y + gameObject.Size.Height;
 
-        private void PaintPlayer(PaintEventArgs args)
+    private void PaintPlayer(PaintEventArgs args)
     {
         if (!player.IsAlive && player.AnimationNumber >= 4)
             return;
@@ -242,8 +230,15 @@ partial class CurrentLevel
         }
     }
 
-    private void PaintTraps(PaintEventArgs args)
+    private void PaintAmbientAndGUI(PaintEventArgs args)
     {
+        if (bell.Location.X != 0)
+            args.Graphics.DrawImage(Resources.Bell, 
+                bell.Location.X, bell.Location.Y, 50, 50);
+        
+        args.Graphics.DrawImage(Resources.finish, this.finish.Location.X, this.finish.Location.Y, 50, 90);
+        
+        args.Graphics.DrawImage(Resources.DangerIcon, 90, 400, 80, 80);
         
         foreach (var trap in this.traps)
         {
@@ -257,17 +252,19 @@ partial class CurrentLevel
                     trap.Size.Width, trap.Size.Height);
             }
         }
-    }
-
-    private void PaintAmbientAndGUI(PaintEventArgs args)
-    {
-        if (bell.Location.X != 0)
-            args.Graphics.DrawImage(Resources.Bell, 
-                bell.Location.X, bell.Location.Y, 50, 50);
         
-        args.Graphics.DrawImage(Resources.finish, this.finish.Location.X, this.finish.Location.Y, 50, 90);
+        args.Graphics.DrawString(currentLevelInfo.DescriptionText, 
+            new Font("Times New Roman", 30, FontStyle.Bold), new SolidBrush(Color.Black), 
+            690 - currentLevelInfo.DescriptionText.Length * 8, 80);
         
-        args.Graphics.DrawImage(Resources.DangerIcon, 90, 400, 80, 80);
+        if (!player.IsAlive)
+            args.Graphics.DrawImage(Resources.Restart, 
+                525, 400, 500, 400);
+        
+        if (currentLevelNumber == 1)
+            args.Graphics.DrawString("Нажмите ЛКМ чтобы двигаться\nНажмите R для рестарта\nНажмите ESC для выхода", 
+                new Font("Times New Roman", 20, FontStyle.Bold), new SolidBrush(Color.Black), 
+                284, 179);
     }
     private Trap[] traps;
     private Finish finish;

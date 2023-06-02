@@ -4,9 +4,12 @@ public class Game
 {
     public LevelInfo[] Levels;
 
-    public void StartGame()
+    public Game()
     {
         Levels = LevelCreator.MakeLevels();
+    }
+    public void StartGame()
+    {
         var gameForm = new MainForm(Levels);
         var timer = new System.Windows.Forms.Timer();
         timer.Interval = 5;

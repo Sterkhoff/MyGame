@@ -2,7 +2,7 @@
 
 public class Enemy : SimplyMoveableObject
 {
-    public bool IsAttack = false;
+    public bool IsAttack;
     public bool IsAlive = true;
     public int AnimationNumber = 1;
     
